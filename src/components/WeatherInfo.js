@@ -10,7 +10,8 @@ export default class WeatherInfo extends Component{
         this.state = {
             cityName: props.city,
             isLoaded: false,
-            items: {}
+            items: {},
+            weather: []
         };
     }
 
@@ -27,20 +28,35 @@ export default class WeatherInfo extends Component{
                 (data) => {
                     this.setState({
                         isLoaded: true,
-                        items: data.main
+                        items: data.main,
+                        weather: data.weather[0]
                     });
                 }
             )
     }
+
+    setUrl(iconID){
+        var url = "http://openweathermap.org/img/wn/" + iconID + "@2x.png";
+        return url;
+    }
+
     render() {
         if(this.state.isLoaded) {
             return (
                 <div className="weather-container">
                     <p>
-                        {this.state.items.temp}
+                        {"Current: "}{((this.state.items.temp - 273.15) * 1.8 + 32).toFixed(2)}<span>&#176;</span>{"F"}
                         <br></br>
-                        {this.state.items.temp_min}
-                    </p>
+                        <br></br>
+                        {"Max: "}{((this.state.items.temp_max - 273.15) * 1.8 + 32).toFixed(2)}<span>&#176;</span>{"F"}
+                        <br></br>
+                        {"Min: "}{((this.state.items.temp_min - 273.15) * 1.8 + 32).toFixed(2)}<span>&#176;</span>{"F"}
+                        <br></br>
+                        {this.state.weather.icon}
+
+                        <br></br>
+                        <img src={this.setUrl(this.state.weather.icon)} alt="Weather Icon" width="100" height="100"></img>
+                    </p>    
                     
                 </div>
             );
